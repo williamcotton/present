@@ -1,0 +1,37 @@
+{
+  "name": "present",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/server/index.js",
+  "type": "module",
+  "engines": {
+    "node": "14.15.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "scripts": {
+    "test": "tap test/features/",
+    "dev": "node src/server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/williamcotton/present.git"
+  },
+  "author": "William Cotton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/williamcotton/present/issues"
+  },
+  "homepage": "https://github.com/williamcotton/present#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "node-fetch": "^2.6.1",
+    "tap": "^15.0.9"
+  }
+}
