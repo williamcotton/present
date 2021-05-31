@@ -2,14 +2,15 @@
   "name": "present",
   "version": "0.1.0",
   "description": "",
-  "main": "src/server/index.js",
+  "private": true,
   "engines": {
     "node": "14.15.1"
   },
   "scripts": {
     "test": "tap --ts --jsx test/features/",
     "dev": "nodemon --watch 'src/**' --ext 'ts,tsx,json' --exec 'ts-node src/server/index.ts'",
-    "build": "rimraf ./build && tsc"
+    "build": "rimraf ./build && tsc",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   },
   "homepage": "https://github.com/williamcotton/present#readme",
   "dependencies": {
+    "browser-express": "^4.6.0",
     "express": "^4.17.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -42,7 +44,10 @@
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
     "tap": "^15.0.9",
+    "ts-loader": "^9.2.2",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
   }
 }
