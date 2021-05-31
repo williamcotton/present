@@ -28,9 +28,12 @@
   },
   "homepage": "https://github.com/williamcotton/present#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.9",
     "node-fetch": "^2.6.1",
     "prettier": "^2.3.0",
     "tap": "^15.0.9"
