@@ -1,17 +1,27 @@
 import express from "browser-express";
 import type { Application } from "express";
-import type { ReactElement } from "react";
-import ReactDOM from "react-dom";
 import routes from "../routes";
+import appLayout from "../views/layouts/application";
+import expressLinkMiddleware from "./middleware/express-link";
+import reactRendererMiddleware from "./middleware/react-renderer";
+
+declare global {
+  interface Window {
+    expressLink: any;
+  }
+}
+
+const { fetch, expressLink } = window;
+const querySelector = (selectors: any) => document.querySelector(selectors);
 
 export const app: Application = express();
-
-app.use((req, res, next) => {
-  res.renderComponent = (component: ReactElement) => {
-    ReactDOM.hydrate(component, document.getElementById("app"));
-  };
-  next();
-});
+app.use(expressLinkMiddleware({ expressLink, querySelector }));
+app.use(
+  reactRendererMiddleware({
+    app,
+    appLayout,
+  })
+);
 
 routes(app);
 

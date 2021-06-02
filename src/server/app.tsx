@@ -1,27 +1,46 @@
 import express from "express";
-import React from "react";
-import type { ReactElement } from "react";
-import { renderToString } from "react-dom/server";
+import compression from "compression";
+import enforce from "express-sslify";
+import cookieSession from "cookie-session";
+import csurf from "csurf";
+import dotenv from "dotenv";
+import expressLinkMiddleware from "./middleware/express-link";
+import reactRendererMiddleware from "./middleware/react-renderer";
 import routes from "../routes";
 import webpackConfig from "../../webpack.config";
+import appLayout from "../views/layouts/application";
 
-export const app = express();
+dotenv.config();
+const nodeEnv = process.env.NODE_ENV;
+const sessionSecret = process.env.SESSION_SECRET;
+const defaultTitle = process.env.DEFAULT_TITLE;
+
+const cookieSessionOptions: any = {
+  name: "session",
+  sameSite: "lax",
+  keys: [sessionSecret],
+};
 
 const buildPath = webpackConfig.output.path;
 const buildFilename = webpackConfig.output.filename;
 
+export const app = express();
+app.disable("x-powered-by");
+if (nodeEnv === "production") {
+  app.set("trust proxy", 1);
+  app.use(enforce.HTTPS({ trustProtoHeader: true }));
+  cookieSessionOptions.secure = true;
+}
+app.use(compression());
 app.use(express.static(buildPath));
-
-app.use((req, res, next) => {
-  res.renderComponent = (component: ReactElement) => {
-    res.send(
-      `${renderToString(
-        <div id="app">{component}</div>
-      )}<script src="/${buildFilename}" type="text/javascript" charset="utf-8"></script>`
-    );
-  };
-  next();
-});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieSession(cookieSessionOptions));
+app.use(csurf());
+app.use(
+  expressLinkMiddleware({ defaultTitle, usePolling: false, buildFilename })
+);
+app.use(reactRendererMiddleware({ appLayout }));
 
 routes(app);
 
