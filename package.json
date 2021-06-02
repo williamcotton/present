@@ -4,13 +4,14 @@
   "description": "",
   "private": true,
   "engines": {
-    "node": "14.15.1"
+    "node": "14.16.1"
   },
   "scripts": {
     "test": "tap --ts --jsx test/features/",
     "dev": "nodemon --watch 'src/**' --ext 'ts,tsx,json' --exec 'ts-node src/server/index.ts'",
     "build": "rimraf ./build && tsc",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "postinstall": "mkdir -p test/screenshots"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
     "prettier": "^2.3.0",
+    "puppeteer": "^10.0.0",
     "rimraf": "^3.0.2",
     "tap": "^15.0.9",
     "ts-loader": "^9.2.2",
