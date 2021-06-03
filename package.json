@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/williamcotton/present/issues"
   },
+  "tap": {
+    "check-coverage": false
+  },
   "homepage": "https://github.com/williamcotton/present#readme",
   "dependencies": {
     "browser-express": "^4.6.0",

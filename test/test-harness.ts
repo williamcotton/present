@@ -29,7 +29,7 @@ export const baseUrl = `http://localhost:${PORT}`;
 
 export const screenshotsPath = path.join(__dirname, "./screenshots");
 
-async function browserHarness() {
+export async function browserHarness() {
   const browser = await puppeteer.launch(puppeteerOptions);
 
   const page = await browser.newPage();
@@ -107,7 +107,7 @@ async function browserHarness() {
   return { close, get$ };
 }
 
-async function serverHarness() {
+export async function serverHarness() {
   const server = app.listen(PORT);
 
   const close = () => {
@@ -120,33 +120,8 @@ async function serverHarness() {
     const body = await response.text();
     const $ = cheerio.load(body);
     const $text = async (selector: string) => $(selector).text();
-    return { $text, screenshot: async () => {}, currentRoute: () => path };
+    return { $text };
   };
 
   return { close, get$ };
 }
-
-export async function testHarness(
-  environment: "browser" | "server" = "browser"
-): Promise<{
-  close: () => void;
-  get$: (path: string) => Promise<{
-    $text: (selector: string) => Promise<string>;
-    screenshot: (name: string) => Promise<any>;
-    currentRoute: () => string;
-    page?: any;
-    findByText?: any;
-    getAttr?: (handle: any) => Promise<{}>;
-    baseUrl?: string;
-    $html?: (selector: string) => Promise<string | false>;
-    browser?: any;
-  }>;
-}> {
-  if (environment === "browser") {
-    return browserHarness();
-  } else {
-    return serverHarness();
-  }
-}
-
-export default testHarness;

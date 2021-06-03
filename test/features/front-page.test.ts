@@ -1,9 +1,9 @@
 import tap from "tap";
 
-import { testHarness } from "../test-harness";
+import { browserHarness, serverHarness } from "../test-harness";
 
 tap.test("[server] /", async (t) => {
-  const { close, get$ } = await testHarness("server");
+  const { close, get$ } = await serverHarness();
   const { $text } = await get$("/");
 
   t.equal(await $text("h1"), "Hello, World!");
@@ -12,7 +12,7 @@ tap.test("[server] /", async (t) => {
 });
 
 tap.test("[browser] /", async (t) => {
-  const { close, get$ } = await testHarness();
+  const { close, get$ } = await browserHarness();
   const { $text, screenshot, page, currentRoute } = await get$("/");
 
   t.equal(await $text("h1"), "Hello, World!");
