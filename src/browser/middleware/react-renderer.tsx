@@ -6,13 +6,13 @@ import type { Application, Request, Response, NextFunction } from "express";
 declare global {
   namespace Express {
     interface Application {
-      navigate: (href: string | false) => void;
+      navigate: (href: string | false, query?: {}) => void;
       submit: (path: string, type: string | null, body: any) => void;
     }
     interface Request {
-      Link: React.FC;
-      Form: React.FC;
-      navigate: (href: string | false) => void;
+      Link: (props: any) => JSX.Element;
+      Form: (props: any) => JSX.Element;
+      navigate: (href: string | false, query?: {}) => void;
       submit: (path: string, type: string | null, body: any) => void;
     }
     interface Response {
@@ -79,9 +79,12 @@ export default function reactRendererMiddleware({
       const { children } = mergedProps;
       delete mergedProps.children;
       delete mergedProps.afterSubmit;
-      const formElements: Array<React.ReactElement> = [].concat(children);
-      formElements.push(<input type="hidden" name="_csrf" value={req.csrf} />);
-      return <form {...mergedProps}>{formElements}</form>;
+      return (
+        <form {...mergedProps}>
+          <input type="hidden" name="_csrf" value={req.csrf} />
+          {children}
+        </form>
+      );
     };
 
     res.renderComponent = (

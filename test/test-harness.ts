@@ -120,7 +120,7 @@ async function serverHarness() {
     const body = await response.text();
     const $ = cheerio.load(body);
     const $text = async (selector: string) => $(selector).text();
-    return { $text, screenshot: async () => {} };
+    return { $text, screenshot: async () => {}, currentRoute: () => path };
   };
 
   return { close, get$ };
@@ -133,7 +133,7 @@ export async function testHarness(
   get$: (path: string) => Promise<{
     $text: (selector: string) => Promise<string>;
     screenshot: (name: string) => Promise<any>;
-    currentRoute?: () => string;
+    currentRoute: () => string;
     page?: any;
     findByText?: any;
     getAttr?: (handle: any) => Promise<{}>;
