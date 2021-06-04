@@ -4,4 +4,7 @@ export default drawRoutes(({ root, resources, error }: any) => {
   root("front-page");
 
   resources("signup", { only: ["create"] });
+
+  error(404, { controller: "errors", action: "notFound" });
+  error(500, { controller: "errors", action: "serverError" });
 });

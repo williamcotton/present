@@ -2,6 +2,9 @@ import pluralize from "pluralize";
 
 import type { Application, Request, Response, NextFunction } from "express";
 
+// TODO: figure out dynamic routing so we can avoid hard coding this!
+import errorController from "../controllers/errors";
+
 declare global {
   namespace Express {
     interface Application {
@@ -115,19 +118,36 @@ export default ({ app, routes }: { app: Application; routes: any }) => {
       return self.indexOf(value) === index;
     })
     .forEach((controller) => {
-      const filepath = `../../controllers/${controller}`;
-      const Controller = require(filepath);
-      errorControllers[controller] = new Controller();
+      // TODO: figure out dynamic routing
+      // const filepath = `../controllers/${controller}`;
+      try {
+        // const { default: Controller } = require(filepath);
+        const Controller = errorController;
+        errorControllers[controller] = new Controller();
+      } catch (e) {
+        // TODO: Error: Cannot find module '../controllers/errors
+        // console.error(e);
+      }
     });
 
-  app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-    console.log(error);
-    const statusCode = error.statusCode || 500;
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.statusCode = 404;
+    const error = errors.filter((e) => e.label === res.statusCode)[0];
+    if (error) {
+      const { controller, action } = error;
+      const controllerInstance = errorControllers[controller];
+      controllerInstance[action](req, res);
+    }
+    next();
+  });
+
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error(err);
+    const statusCode = err.statusCode || 500;
     res.statusCode = statusCode;
-    const { controller, action } = errors.filter(
-      (e) => e.label === statusCode
-    )[0];
-    if (controller && action) {
+    const error = errors.filter((e) => e.label === statusCode)[0];
+    if (error) {
+      const { controller, action } = error;
       const controllerInstance = errorControllers[controller];
       controllerInstance[action](req, res);
     }

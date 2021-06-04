@@ -133,7 +133,7 @@ export default class ActionControllerBase {
   paths: any;
   beforeFilter: any;
 
-  constructor(options: any) {
+  constructor(options?: any) {
     this.router = routerFactory({ mergeParams: true });
     this.options = options;
     this.paths = {};
