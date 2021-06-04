@@ -50,7 +50,7 @@ declare global {
     }
     interface Response {
       expressLink: any;
-      navigate: (path: string, query: {}) => void;
+      navigate: (path: string, query?: {}) => void;
       cacheQuery: (key: string, data: {}) => void;
     }
   }
@@ -94,7 +94,7 @@ export default ({
         buildFilename,
       });
 
-    res.navigate = (path: string, query: {}) => {
+    res.navigate = (path: string, query?: {}) => {
       const pathname = query ? `${path}?${qs.stringify(query)}` : path;
       res.redirect(pathname);
     };

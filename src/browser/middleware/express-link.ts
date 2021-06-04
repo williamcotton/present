@@ -26,7 +26,7 @@ export default ({
       return { appContainer: querySelector("#app") };
     };
 
-    res.navigate = (path: string, query: {}) => {
+    res.navigate = (path: string, query?: {}) => {
       const pathname = query ? `${path}?${qs.stringify(query)}` : path;
       res.redirect(pathname);
     };

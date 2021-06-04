@@ -6,6 +6,8 @@ import csurf from "csurf";
 import dotenv from "dotenv";
 import expressLinkMiddleware from "./middleware/express-link";
 import reactRendererMiddleware from "./middleware/react-renderer";
+import reactActionViewMiddleware from "../middleware/react-action-view";
+import controllerRouterMiddleware from "../middleware/controller-router";
 import routes from "../routes";
 import webpackConfig from "../../webpack.config";
 import appLayout from "../views/layouts/application";
@@ -41,7 +43,7 @@ app.use(
   expressLinkMiddleware({ defaultTitle, usePolling: false, buildFilename })
 );
 app.use(reactRendererMiddleware({ appLayout }));
-
-routes(app);
+app.use(reactActionViewMiddleware());
+app.use(controllerRouterMiddleware({ app, routes }));
 
 export default app;

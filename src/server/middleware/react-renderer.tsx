@@ -2,6 +2,16 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import type { Request, Response, NextFunction } from "express";
 
+type RenderComponentOptions = {
+  layout?: ({}: {
+    content: React.ReactElement;
+    req: Request;
+  }) => React.ReactElement;
+  title?: string;
+  description?: string;
+  statusCode?: number;
+};
+
 declare global {
   namespace Express {
     interface Application {
@@ -15,7 +25,10 @@ declare global {
       submit: (path: string, type: string | null, body: any) => void;
     }
     interface Response {
-      renderComponent(component: React.ReactElement): void;
+      renderComponent(
+        component: React.ReactElement,
+        options: RenderComponentOptions
+      ): void;
     }
   }
 }
@@ -49,15 +62,7 @@ export default ({
 
     res.renderComponent = (
       content: React.ReactElement,
-      options: {
-        layout?: ({}: {
-          content: React.ReactElement;
-          req: Request;
-        }) => React.ReactElement;
-        title?: string;
-        description?: string;
-        statusCode?: number;
-      } = {}
+      options: RenderComponentOptions = {}
     ) => {
       const Layout = options.layout || appLayout;
       const renderedContent = renderToString(

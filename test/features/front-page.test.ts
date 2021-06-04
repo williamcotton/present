@@ -13,7 +13,7 @@ tap.test("[server] /", async (t) => {
 
 tap.test("[browser] /", async (t) => {
   const { close, get$ } = await browserHarness();
-  const { $text, screenshot, page, currentRoute } = await get$("/");
+  const { $text, screenshot, page } = await get$("/");
 
   t.equal(await $text("h1"), "Hello, World!");
   await screenshot("front-page");
@@ -22,7 +22,6 @@ tap.test("[browser] /", async (t) => {
   await page.$eval("button.submit", (button: any) => button.click());
 
   t.equal(await $text("h3"), "test@test.com");
-  t.equal(currentRoute(), "/signup-confirmation?email=test%40test.com");
   await screenshot("signup-confirmation");
 
   close();

@@ -4,6 +4,8 @@ import routes from "../routes";
 import appLayout from "../views/layouts/application";
 import expressLinkMiddleware from "./middleware/express-link";
 import reactRendererMiddleware from "./middleware/react-renderer";
+import reactActionViewMiddleware from "../middleware/react-action-view";
+import controllerRouterMiddleware from "../middleware/controller-router";
 
 declare global {
   interface Window {
@@ -22,7 +24,7 @@ app.use(
     appLayout,
   })
 );
-
-routes(app);
+app.use(reactActionViewMiddleware());
+app.use(controllerRouterMiddleware({ app, routes }));
 
 export default app;
