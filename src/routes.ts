@@ -1,6 +1,6 @@
 import drawRoutes from "./vendor/draw-routes";
 
-export default drawRoutes(({ root, resources, error }: any) => {
+export default drawRoutes(({ root, resources, error }) => {
   root("front-page");
 
   resources("signup", { only: ["create"] });

@@ -2,7 +2,33 @@ import routerFactory from "router";
 import { compile, parse } from "path-to-regexp";
 import qs from "qs";
 
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction, Router } from "express";
+
+export type Action = "index" | "show" | "create" | "update" | "destroy";
+export type Method = "get" | "post" | "patch" | "delete";
+
+export type ActionMethod = {
+  action: Action;
+  method: Method;
+  path: string;
+};
+
+export type RouteOptions = {
+  only?: Action[];
+  controller?: string;
+  action?: string;
+  routePath?: string;
+  filePath?: string;
+};
+
+export type ControllerRouteOptions = {
+  only?: Action[];
+  controller?: string;
+  action?: string;
+  routePath: string;
+  filePath: string;
+  method: Method;
+};
 
 declare global {
   namespace Express {
@@ -10,8 +36,8 @@ declare global {
       controller: {
         routePath: string;
         filePath: string;
-        action: string;
-        method: string;
+        action: Action;
+        method: Method;
         path: string;
         options: any;
       };
@@ -28,7 +54,7 @@ function e(fn: any) {
   };
 }
 
-const ACTIONS = [
+const ACTION_METHODS: ActionMethod[] = [
   {
     action: "index",
     method: "get",
@@ -63,10 +89,10 @@ function initControllerAction({
   method,
   path,
 }: {
-  options: any;
+  options: ControllerRouteOptions;
   controller: any;
-  action: string;
-  method: string;
+  action: Action;
+  method: Method;
   path: string;
 }) {
   const actionFunc = controller[action];
@@ -122,18 +148,22 @@ function initController({
   controller: any;
   options: any;
 }) {
-  ACTIONS.forEach(({ action, method, path }) =>
+  ACTION_METHODS.forEach(({ action, method, path }) =>
     initControllerAction({ controller, options, action, method, path })
   );
 }
 
+export type ControllerPaths = {
+  index?: any;
+};
+
 export default class ActionControllerBase {
-  router: any;
-  options: any;
-  paths: any;
+  router: Router;
+  options?: ControllerRouteOptions;
+  paths: ControllerPaths;
   beforeFilter: any;
 
-  constructor(options?: any) {
+  constructor(options?: ControllerRouteOptions) {
     this.router = routerFactory({ mergeParams: true });
     this.options = options;
     this.paths = {};

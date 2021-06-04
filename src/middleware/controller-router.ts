@@ -1,22 +1,30 @@
 import pluralize from "pluralize";
 
-import type { Application, Request, Response, NextFunction } from "express";
-
 // TODO: figure out dynamic routing so we can avoid hard coding this!
 import errorController from "../controllers/errors";
+
+import type {
+  Application,
+  Request,
+  Response,
+  NextFunction,
+  Router,
+} from "express";
+import type { RoutesDefinition, RouteDefinition } from "../vendor/draw-routes";
+import type { Action, Method } from "../vendor/action-controller-base";
 
 declare global {
   namespace Express {
     interface Application {
-      paths: any;
+      paths: {};
     }
     interface Request {
-      p: any;
+      p: {};
       controller: {
         routePath: string;
         filePath: string;
-        action: string;
-        method: string;
+        action: Action;
+        method: Method;
         path: string;
         options: any;
       };
@@ -24,9 +32,39 @@ declare global {
   }
 }
 
-export default ({ app, routes }: { app: Application; routes: any }) => {
+interface ControllerInstance {
+  paths: {};
+  router: Router;
+}
+
+type ControllerOptions = {
+  filePath: string;
+  label: string;
+  routePath: string;
+  action?: Action;
+  options: any;
+  only?: Action[];
+  children?: any[];
+  match?: string;
+  path?: string;
+  basePath?: string;
+  fileBasePath?: string;
+  controller?: any;
+};
+
+interface ControllerClass {
+  new (options: ControllerOptions): ControllerInstance;
+}
+
+export default ({
+  app,
+  routes,
+}: {
+  app: Application;
+  routes: RoutesDefinition;
+}) => {
   const errors: any[] = [];
-  const paths: any = {};
+  const paths: { [key: string]: any } = {};
 
   app.paths = paths;
 
@@ -35,14 +73,17 @@ export default ({ app, routes }: { app: Application; routes: any }) => {
     next();
   });
 
-  function loadController(opts: any) {
-    const { default: Controller } = require(`../controllers${opts.filePath}`);
+  function loadController(opts: ControllerOptions) {
+    const Controller: ControllerClass =
+      require(`../controllers${opts.filePath}`).default;
     const controllerInstance = new Controller(opts);
     paths[opts.label] = controllerInstance.paths;
     app.use(opts.routePath, controllerInstance.router);
   }
 
-  let map: any;
+  let map: {
+    [key: string]: any;
+  };
 
   function nestedChildren({
     children,
@@ -54,7 +95,7 @@ export default ({ app, routes }: { app: Application; routes: any }) => {
     fileBasePath?: string;
   }) {
     if (children) {
-      children.forEach((childRoute: any) => {
+      children.forEach((childRoute: RouteDefinition) => {
         map[childRoute.type](
           Object.assign(childRoute, { basePath, fileBasePath })
         );
@@ -63,19 +104,19 @@ export default ({ app, routes }: { app: Application; routes: any }) => {
   }
 
   map = {
-    root: (options: any) => {
+    root: (options: ControllerOptions) => {
       const { label } = options;
       const filePath = `/${label}`;
       const routePath = "";
       const action = "index";
       loadController({ filePath, routePath, action, label, options });
     },
-    namespace: (options: any) => {
+    namespace: (options: ControllerOptions) => {
       const { label, children, basePath = "" } = options;
       const filePath = `${basePath}/${label}`;
       nestedChildren({ children, basePath: filePath });
     },
-    resources: (options: any) => {
+    resources: (options: ControllerOptions) => {
       const {
         path,
         label,
@@ -94,17 +135,17 @@ export default ({ app, routes }: { app: Application; routes: any }) => {
         fileBasePath: filePath,
       });
     },
-    match: (options: any) => {
+    match: (options: ControllerOptions) => {
       const { label: match, controller, action } = options;
       const filePath = `/${controller}`;
       const routePath = "";
       const label = controller;
       loadController({ filePath, routePath, match, action, label, options });
     },
-    error: (error: any) => errors.push(error),
+    error: (error: ControllerOptions) => errors.push(error),
   };
 
-  routes.forEach((route: any) => {
+  routes.forEach((route) => {
     if (map[route.type]) {
       map[route.type](route);
     }
