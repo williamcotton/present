@@ -11,7 +11,7 @@
     "dev": "nodemon --watch 'src/**' --ext 'ts,tsx,json' --exec 'ts-node src/server/index.ts'",
     "build": "rimraf ./build && tsc",
     "watch": "webpack --watch",
-    "postinstall": "mkdir -p test/screenshots"
+    "postinstall": "make"
   },
   "repository": {
     "type": "git",
