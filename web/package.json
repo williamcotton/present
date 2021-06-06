@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "engines": {
-    "node": "14.16.1"
+    "node": "14"
   },
   "scripts": {
     "test": "tap --ts --jsx test/features/",
