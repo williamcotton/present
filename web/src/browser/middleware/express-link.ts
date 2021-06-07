@@ -8,10 +8,10 @@ declare global {
   namespace Express {
     interface Request {
       renderDocument: (options: {
-        renderedContent: string;
+        renderedContent?: string;
         title?: string;
         description?: string;
-      }) => string | { appContainer: HTMLElement | null };
+      }) => any;
       csrf: string; // comes from expressLink
       [key: string]: any;
     }
