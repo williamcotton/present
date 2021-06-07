@@ -1,7 +1,7 @@
 import qs from "qs";
 import type { Request, Response, NextFunction } from "express";
 
-const { expressLink } = window;
+const { expressLink, fetch: origFetch } = window;
 const querySelector = (selectors: any) => document.querySelector(selectors);
 
 declare global {
@@ -24,6 +24,14 @@ declare global {
 export default () => (req: Request, res: Response, next: NextFunction) => {
   const { defaultTitle } = expressLink;
   Object.keys(expressLink).forEach((key) => (req[key] = expressLink[key]));
+
+  global.fetch = async (...args) => {
+    const key = JSON.stringify(args);
+    const cachedData = req.queryCache[key];
+    return cachedData
+      ? new Response(JSON.stringify(cachedData))
+      : await origFetch(...args);
+  };
 
   req.renderDocument = ({ title }: { title?: string }) => {
     querySelector("title").innerText = title || defaultTitle;

@@ -1,5 +1,6 @@
 import qs from "qs";
 import type { Request, Response, NextFunction } from "express";
+import origFetch from "isomorphic-fetch";
 
 const styleTag = '<link rel="stylesheet" href="/app.css" />';
 const metaViewportTag =
@@ -62,12 +63,14 @@ declare global {
 
 export default ({
     defaultTitle,
+    apiBaseUrl = "",
     usePolling,
     buildFilename,
   }: {
     defaultTitle?: string;
     usePolling: boolean;
     buildFilename: string;
+    apiBaseUrl?: string;
   }) =>
   (req: Request, res: Response, next: NextFunction) => {
     req.csrf = req.csrfToken();
@@ -78,6 +81,14 @@ export default ({
       defaultTitle,
       usePolling,
       socketHost: req.socketHost,
+    };
+
+    global.fetch = async (...args) => {
+      const response = await origFetch(...args);
+      const key = JSON.stringify(args).replace(apiBaseUrl, "");
+      const data = await response.clone().json();
+      res.cacheQuery(key, data);
+      return response;
     };
 
     req.renderDocument = ({

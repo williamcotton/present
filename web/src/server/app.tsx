@@ -47,7 +47,12 @@ app.all("/api/v1/*", async (req, res) => {
 app.use(cookieSession(cookieSessionOptions));
 app.use(csurf());
 app.use(
-  expressLinkMiddleware({ defaultTitle, usePolling: false, buildFilename })
+  expressLinkMiddleware({
+    defaultTitle,
+    usePolling: false,
+    buildFilename,
+    apiBaseUrl,
+  })
 );
 app.use(reactRendererMiddleware({ appLayout }));
 app.use(reactActionViewMiddleware());
