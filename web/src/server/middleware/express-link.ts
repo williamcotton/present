@@ -16,8 +16,8 @@ function renderDocument({
   defaultTitle?: string;
   expressLink: any;
   renderedContent: string;
-  description: string;
-  title: string;
+  description?: string;
+  title?: string;
   buildFilename: string;
 }) {
   return `
@@ -45,7 +45,11 @@ declare global {
   namespace Express {
     interface Request {
       socketHost: string;
-      renderDocument: (options: any) => any;
+      renderDocument: (options: {
+        renderedContent: string;
+        title?: string;
+        description?: string;
+      }) => string | { appContainer: HTMLElement | null };
       csrf: string;
     }
     interface Response {
@@ -82,8 +86,8 @@ export default ({
       description,
     }: {
       renderedContent: string;
-      title: string;
-      description: string;
+      title?: string;
+      description?: string;
     }) =>
       renderDocument({
         defaultTitle,

@@ -1,11 +1,21 @@
-# Update the VARIANT arg in docker-compose.yml to pick a Node version: 10, 12, 14
-ARG VARIANT=12
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
+# [Choice] Ruby version: 2, 2.7, 2.6, 2.5
+ARG VARIANT=2
+FROM mcr.microsoft.com/vscode/devcontainers/ruby:0-${VARIANT}
 
 # Update args in docker-compose.yaml to set the UID/GID of the "node" user.
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then groupmod --gid $USER_GID node && usermod --uid $USER_UID --gid $USER_GID node; fi
+
+# Install Rails
+RUN gem install rails webdrivers
+
+# Default value to allow debug server to serve content over GitHub Codespace's port forwarding service
+# The value is a comma-separated list of allowed domains 
+ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev"
+
+ARG NODE_VERSION="lts/*"
+RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
@@ -49,9 +59,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
   xdg-utils \
   libxshmfence1
 
-# [Optional] Uncomment if you want to install an additional version of node using nvm
-# ARG EXTRA_NODE_VERSION=10
-# RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
+# [Optional] Uncomment this line to install additional gems.
+# RUN gem install <your-gem-names-here>
 
-# [Optional] Uncomment if you want to install more global node modules
-# RUN su node -c "npm install -g <your-package-list-here>"
+# [Optional] Uncomment this line to install global node packages.
+# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
