@@ -85,9 +85,12 @@ export default ({
 
     global.fetch = async (...args) => {
       const response = await origFetch(...args);
-      const key = JSON.stringify(args).replace(apiBaseUrl, "");
-      const data = await response.clone().json();
-      res.cacheQuery(key, data);
+      const method = args[1]?.method;
+      if (method?.toUpperCase() === "GET") {
+        const key = JSON.stringify(args).replace(apiBaseUrl, "");
+        const data = await response.clone().json();
+        res.cacheQuery(key, data);
+      }
       return response;
     };
 
