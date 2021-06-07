@@ -7,17 +7,8 @@ import reactRendererMiddleware from "./middleware/react-renderer";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
 
-declare global {
-  interface Window {
-    expressLink: any;
-  }
-}
-
-const { fetch, expressLink } = window;
-const querySelector = (selectors: any) => document.querySelector(selectors);
-
 export const app: Application = express();
-app.use(expressLinkMiddleware({ expressLink, querySelector }));
+app.use(expressLinkMiddleware());
 app.use(
   reactRendererMiddleware({
     app,

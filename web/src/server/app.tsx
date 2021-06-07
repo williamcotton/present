@@ -16,6 +16,7 @@ dotenv.config();
 const nodeEnv = process.env.NODE_ENV;
 const sessionSecret = process.env.SESSION_SECRET;
 const defaultTitle = process.env.DEFAULT_TITLE;
+const apiBaseUrl = process.env.API_BASE_URL;
 
 const cookieSessionOptions: any = {
   name: "session",
@@ -37,6 +38,12 @@ app.use(compression());
 app.use(express.static(buildPath));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.all("/api/v1/*", async (req, res) => {
+  const { path, method } = req;
+  const response = await fetch(`${apiBaseUrl}${path}`, { method });
+  const json = await response.json();
+  res.send(json);
+});
 app.use(cookieSession(cookieSessionOptions));
 app.use(csurf());
 app.use(
@@ -45,5 +52,4 @@ app.use(
 app.use(reactRendererMiddleware({ appLayout }));
 app.use(reactActionViewMiddleware());
 app.use(controllerRouterMiddleware({ app, routes }));
-
 export default app;
