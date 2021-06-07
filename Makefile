@@ -4,6 +4,7 @@ postcreate:
 
 test:
 	cd api && rails s -d
-	cd web && yarn test && cd ../api && rspec
+	cd web && yarn test
+	cd api && rspec
 	kill -9 `cat api/tmp/pids/server.pid`
 	rm api/tmp/pids/server.pid
