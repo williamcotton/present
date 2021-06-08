@@ -184,7 +184,9 @@ export default ({
 
   app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error(err);
-    const statusCode = err.statusCode || 500;
+    const statusCode = err.response?.status
+      ? err.response.status
+      : err.statusCode || 500;
     res.statusCode = statusCode;
     const error = errors.filter((e) => e.label === statusCode)[0];
     if (error) {

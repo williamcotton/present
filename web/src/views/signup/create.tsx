@@ -1,5 +1,6 @@
 import React from "react";
+import User from "../../models/user";
 
-export default ({ email }: { email: string }) => {
-  return <h3>{email}</h3>;
+export default ({ user, success }: { user: User; success: boolean }) => {
+  return <h3>{user.email}</h3>;
 };

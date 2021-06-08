@@ -90,9 +90,9 @@ export default ({
         const key = JSON.stringify(args).replace(apiBaseUrl, "");
         const clonedResponse = response.clone();
         try {
-          const data = await clonedResponse.json();
-          console.log(data);
-          res.cacheQuery(key, data);
+          const body = await clonedResponse.text();
+          const { status, statusText, headers } = clonedResponse;
+          res.cacheQuery(key, { body, status, statusText, headers });
         } catch (e) {}
       }
       return response;

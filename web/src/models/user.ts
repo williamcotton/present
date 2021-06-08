@@ -5,6 +5,6 @@ import ApplicationRecord from "./application-record";
 export default class User extends ApplicationRecord {
   static jsonapiType = "users";
 
-  @Attr() name: string = "";
-  @Attr() email: string = "";
+  @Attr() name?: string;
+  @Attr() email?: string;
 }

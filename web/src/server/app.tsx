@@ -37,9 +37,11 @@ if (nodeEnv === "production") {
 app.use(compression());
 app.use(express.static(buildPath));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(
+  express.json({ type: ["application/vnd.api+json", "application/json"] })
+);
 app.all("/api/v1/*", async (req, res) => {
-  const { path, method } = req;
+  const { path, method, body } = req;
   const headers = new Headers({
     Accept: "application/vnd.api+json",
     "Content-Type": "application/vnd.api+json",
@@ -48,6 +50,7 @@ app.all("/api/v1/*", async (req, res) => {
     method,
     headers: headers,
     credentials: "same-origin",
+    body: JSON.stringify(body),
   });
   const json = await response.json();
   res.send(json);

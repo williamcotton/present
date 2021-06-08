@@ -27,9 +27,9 @@ export default () => (req: Request, res: Response, next: NextFunction) => {
 
   global.fetch = async (...args) => {
     const key = JSON.stringify(args);
-    const cachedData = req.queryCache[key];
-    return cachedData
-      ? new Response(JSON.stringify(cachedData))
+    const cachedResponse = req.queryCache[key];
+    return cachedResponse
+      ? new Response(cachedResponse.body, cachedResponse)
       : await origFetch(...args);
   };
 
