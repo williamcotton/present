@@ -40,7 +40,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.all("/api/v1/*", async (req, res) => {
   const { path, method } = req;
-  const response = await fetch(`${apiBaseUrl}${path}`, { method });
+  const headers = new Headers({
+    Accept: "application/vnd.api+json",
+    "Content-Type": "application/vnd.api+json",
+  });
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    method,
+    headers: headers,
+    credentials: "same-origin",
+  });
   const json = await response.json();
   res.send(json);
 });

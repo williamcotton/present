@@ -88,8 +88,12 @@ export default ({
       const method = args[1]?.method;
       if (method?.toUpperCase() === "GET") {
         const key = JSON.stringify(args).replace(apiBaseUrl, "");
-        const data = await response.clone().json();
-        res.cacheQuery(key, data);
+        const clonedResponse = response.clone();
+        try {
+          const data = await clonedResponse.json();
+          console.log(data);
+          res.cacheQuery(key, data);
+        } catch (e) {}
       }
       return response;
     };
