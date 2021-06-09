@@ -16,10 +16,15 @@ import type { Action, Method } from "../vendor/action-controller-base";
 declare global {
   namespace Express {
     interface Application {
-      paths: {};
+      paths: { [key: string]: any };
     }
     interface Request {
-      p: {};
+      p: {
+        [key: string]: {
+          create: () => string;
+          destroy: ({ id }: { id: string | number }) => string;
+        };
+      };
       controller: {
         routePath: string;
         filePath: string;

@@ -84,9 +84,14 @@ export default ({
     };
 
     global.fetch = async (...args) => {
+      const headers: any = args[1]?.headers;
+      const contentType = headers.get("Content-Type");
       const response = await origFetch(...args);
       const method = args[1]?.method;
-      if (method?.toUpperCase() === "GET") {
+      if (
+        method?.toUpperCase() === "GET" &&
+        contentType === "application/vnd.api+json"
+      ) {
         const key = JSON.stringify(args).replace(apiBaseUrl, "");
         const clonedResponse = response.clone();
         try {

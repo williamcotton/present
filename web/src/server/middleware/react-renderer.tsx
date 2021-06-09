@@ -50,6 +50,7 @@ export default ({
       const mergedProps = { ...props };
       const { children } = mergedProps;
       delete mergedProps.children;
+      // TODO: <input type="hidden" value="delete" name="_method">
       return (
         <form {...mergedProps}>
           <input type="hidden" name="_csrf" value={req.csrf} />

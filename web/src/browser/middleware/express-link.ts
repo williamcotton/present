@@ -13,7 +13,8 @@ declare global {
         description?: string;
       }) => any;
       csrf: string; // comes from expressLink
-      [key: string]: any;
+      queryCache: any;
+      // [key: string]: any;
     }
   }
   interface Window {
@@ -21,7 +22,7 @@ declare global {
   }
 }
 
-export default () => (req: Request, res: Response, next: NextFunction) => {
+export default () => (req: any, res: Response, next: NextFunction) => {
   const { defaultTitle } = expressLink;
   Object.keys(expressLink).forEach((key) => (req[key] = expressLink[key]));
 
