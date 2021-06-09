@@ -23,14 +23,18 @@ if (fs.existsSync(chromiumPath)) {
   puppeteerOptions.executablePath = chromiumPath;
 }
 
-export const PORT = 4242;
+const PORT = 4242;
 
-export const baseUrl = `http://localhost:${PORT}`;
+const baseUrl = `http://localhost:${PORT}`;
 
-export const screenshotsPath = path.join(__dirname, "./screenshots");
+const screenshotsPath = path.join(__dirname, "./screenshots");
 
 export async function browserHarness() {
   const browser = await puppeteer.launch(puppeteerOptions);
+
+  const PORT = Math.floor(Math.random() * 1000 + 3000);
+
+  const baseUrl = `http://localhost:${PORT}`;
 
   const page = await browser.newPage();
 
