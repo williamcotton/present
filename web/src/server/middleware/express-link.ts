@@ -59,18 +59,17 @@ declare global {
       cacheQuery: (key: string, data: {}) => void;
     }
   }
+  interface Window {
+    expressLink: { [key: string]: any };
+  }
 }
 
 export default ({
     defaultTitle,
-    apiBaseUrl = "",
-    usePolling,
     buildFilename,
   }: {
     defaultTitle?: string;
-    usePolling: boolean;
     buildFilename: string;
-    apiBaseUrl?: string;
   }) =>
   (req: Request, res: Response, next: NextFunction) => {
     req.csrf = req.csrfToken();
@@ -79,28 +78,7 @@ export default ({
       queryCache: {},
       csrf: req.csrf,
       defaultTitle,
-      usePolling,
       socketHost: req.socketHost,
-    };
-
-    global.fetch = async (...args) => {
-      const headers: any = args[1]?.headers;
-      const contentType = headers.get("Content-Type");
-      const response = await origFetch(...args);
-      const method = args[1]?.method;
-      if (
-        method?.toUpperCase() === "GET" &&
-        contentType === "application/vnd.api+json"
-      ) {
-        const key = JSON.stringify(args).replace(apiBaseUrl, "");
-        const clonedResponse = response.clone();
-        try {
-          const body = await clonedResponse.text();
-          const { status, statusText, headers } = clonedResponse;
-          res.cacheQuery(key, { body, status, statusText, headers });
-        } catch (e) {}
-      }
-      return response;
     };
 
     req.renderDocument = ({

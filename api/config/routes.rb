@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :rooms
     resources :teams
     resources :users
+    resources :room_connections
     mount VandalUi::Engine, at: '/vandal'
     # your routes go here
   end

@@ -9,6 +9,7 @@ import expressLinkMiddleware from "./middleware/express-link";
 import reactRendererMiddleware from "./middleware/react-renderer";
 import graphqlClientMiddleware from "./middleware/graphql-client";
 import authenticationMiddleware from "./middleware/authentication";
+import spraypaintMiddleware from "./middleware/spraypaint";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
 import routes from "../routes";
@@ -37,6 +38,8 @@ const cookieSessionOptions: any = {
 const buildPath = webpackConfig.output.path;
 const buildFilename = webpackConfig.output.filename;
 
+const jsonTypes = ["application/vnd.api+json", "application/json"];
+
 export const app = express();
 app.disable("x-powered-by");
 if (nodeEnv === "production") {
@@ -47,38 +50,12 @@ if (nodeEnv === "production") {
 app.use(compression());
 app.use(express.static(buildPath));
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  express.json({ type: ["application/vnd.api+json", "application/json"] })
-);
-app.all("/api/v1/*", async (req, res) => {
-  const { path, method, body } = req;
-  const headers = new Headers({
-    Accept: "application/vnd.api+json",
-    "Content-Type": "application/vnd.api+json",
-  });
-  const fetchOptions: any = {
-    method,
-    headers: headers,
-    credentials: "same-origin",
-  };
-  if (Object.keys(body).length > 0) {
-    fetchOptions.body = JSON.stringify(body);
-  }
-  const response = await fetch(`${apiBaseUrl}${path}`, fetchOptions);
-  const json = await response.json();
-  res.send(json);
-});
+app.use(express.json({ type: jsonTypes }));
 app.use(cookieSession(cookieSessionOptions));
 app.use(csurf());
-app.use(
-  expressLinkMiddleware({
-    defaultTitle,
-    usePolling: false,
-    buildFilename,
-    apiBaseUrl,
-  })
-);
+app.use(expressLinkMiddleware({ defaultTitle, buildFilename }));
 app.use(authenticationMiddleware());
+app.use(spraypaintMiddleware({ app, apiBaseUrl }));
 app.use(reactRendererMiddleware({ appLayout }));
 app.use(route, graphqlHTTP({ schema, rootValue, graphiql }));
 app.use(graphqlClientMiddleware({ schema, rootValue, cacheKey }));

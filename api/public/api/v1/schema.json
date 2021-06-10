@@ -1,6 +1,322 @@
 {
   "resources": [
     {
+      "name": "RoomConnectionResource",
+      "type": "room_connections",
+      "graphql_entrypoint": "roomConnections",
+      "description": null,
+      "attributes": {
+        "id": {
+          "type": "integer_id",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "jwt": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "twilio_room_name": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "room_name": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "team_name": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "identity": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        }
+      },
+      "extra_attributes": {
+      },
+      "sorts": {
+        "id": {
+        },
+        "jwt": {
+        },
+        "twilio_room_name": {
+        },
+        "room_name": {
+        },
+        "team_name": {
+        },
+        "identity": {
+        }
+      },
+      "filters": {
+        "id": {
+          "type": "integer_id",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        },
+        "jwt": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        },
+        "twilio_room_name": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        },
+        "room_name": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        },
+        "team_name": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        },
+        "identity": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        }
+      },
+      "relationships": {
+      },
+      "stats": {
+        "total": [
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "RoomResource",
+      "type": "rooms",
+      "graphql_entrypoint": "rooms",
+      "description": null,
+      "attributes": {
+        "id": {
+          "type": "integer_id",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "name": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "participants": {
+          "type": "array",
+          "readable": true,
+          "writable": true,
+          "description": null
+        }
+      },
+      "extra_attributes": {
+      },
+      "sorts": {
+        "id": {
+        },
+        "name": {
+        },
+        "participants": {
+        }
+      },
+      "filters": {
+        "id": {
+          "type": "integer_id",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        },
+        "participants": {
+          "type": "array",
+          "operators": [
+            "eq"
+          ]
+        },
+        "team_id": {
+          "type": "integer",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        }
+      },
+      "relationships": {
+        "team": {
+          "type": "belongs_to",
+          "description": null,
+          "resource": "TeamResource"
+        }
+      },
+      "stats": {
+        "total": [
+          "count"
+        ]
+      }
+    },
+    {
+      "name": "TeamResource",
+      "type": "teams",
+      "graphql_entrypoint": "teams",
+      "description": null,
+      "attributes": {
+        "id": {
+          "type": "integer_id",
+          "readable": true,
+          "writable": true,
+          "description": null
+        },
+        "name": {
+          "type": "string",
+          "readable": true,
+          "writable": true,
+          "description": null
+        }
+      },
+      "extra_attributes": {
+      },
+      "sorts": {
+        "id": {
+        },
+        "name": {
+        }
+      },
+      "filters": {
+        "id": {
+          "type": "integer_id",
+          "operators": [
+            "eq",
+            "not_eq",
+            "gt",
+            "gte",
+            "lt",
+            "lte"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "operators": [
+            "eq",
+            "not_eq",
+            "eql",
+            "not_eql",
+            "prefix",
+            "not_prefix",
+            "suffix",
+            "not_suffix",
+            "match",
+            "not_match"
+          ]
+        }
+      },
+      "relationships": {
+        "rooms": {
+          "type": "has_many",
+          "description": null,
+          "resource": "RoomResource"
+        }
+      },
+      "stats": {
+        "total": [
+          "count"
+        ]
+      }
+    },
+    {
       "name": "UserResource",
       "type": "users",
       "graphql_entrypoint": "users",
@@ -126,6 +442,63 @@
     }
   ],
   "endpoints": {
+    "/api/v1/room_connections": {
+      "actions": {
+        "index": {
+          "resource": "RoomConnectionResource"
+        },
+        "show": {
+          "resource": "RoomConnectionResource"
+        },
+        "create": {
+          "resource": "RoomConnectionResource"
+        },
+        "update": {
+          "resource": "RoomConnectionResource"
+        },
+        "destroy": {
+          "resource": "RoomConnectionResource"
+        }
+      }
+    },
+    "/api/v1/rooms": {
+      "actions": {
+        "index": {
+          "resource": "RoomResource"
+        },
+        "show": {
+          "resource": "RoomResource"
+        },
+        "create": {
+          "resource": "RoomResource"
+        },
+        "update": {
+          "resource": "RoomResource"
+        },
+        "destroy": {
+          "resource": "RoomResource"
+        }
+      }
+    },
+    "/api/v1/teams": {
+      "actions": {
+        "index": {
+          "resource": "TeamResource"
+        },
+        "show": {
+          "resource": "TeamResource"
+        },
+        "create": {
+          "resource": "TeamResource"
+        },
+        "update": {
+          "resource": "TeamResource"
+        },
+        "destroy": {
+          "resource": "TeamResource"
+        }
+      }
+    },
     "/api/v1/users": {
       "actions": {
         "index": {
