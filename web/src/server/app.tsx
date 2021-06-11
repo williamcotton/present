@@ -9,6 +9,7 @@ import expressLinkMiddleware from "./middleware/express-link";
 import reactRendererMiddleware from "./middleware/react-renderer";
 import graphqlClientMiddleware from "./middleware/graphql-client";
 import authenticationMiddleware from "./middleware/authentication";
+import analyticsMiddleware from "./middleware/analytics";
 import spraypaintMiddleware from "./middleware/spraypaint";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
@@ -16,6 +17,8 @@ import routes from "../routes";
 import webpackConfig from "../../webpack.config";
 import appLayout from "../views/layouts/application";
 import graphqlSchema from "./graphql-schema";
+
+import { analyticsRouter } from "../analytics-router";
 
 const { schema, rootValue, graphiql } = graphqlSchema();
 
@@ -59,6 +62,7 @@ app.use(spraypaintMiddleware({ app, apiBaseUrl }));
 app.use(reactRendererMiddleware({ appLayout }));
 app.use(route, graphqlHTTP({ schema, rootValue, graphiql }));
 app.use(graphqlClientMiddleware({ schema, rootValue, cacheKey }));
+app.use(analyticsMiddleware({ analyticsRouter, app }));
 app.use(reactActionViewMiddleware());
 app.use(controllerRouterMiddleware({ app, routes }));
 export default app;

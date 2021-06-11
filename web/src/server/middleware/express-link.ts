@@ -1,6 +1,5 @@
 import qs from "qs";
 import type { Request, Response, NextFunction } from "express";
-import origFetch from "isomorphic-fetch";
 
 const styleTag = '<link rel="stylesheet" href="/app.css" />';
 const metaViewportTag =

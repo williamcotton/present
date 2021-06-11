@@ -8,8 +8,11 @@ import reactRendererMiddleware from "./middleware/react-renderer";
 import graphqlClientMiddleware from "./middleware/graphql-client";
 import authenticationMiddleware from "./middleware/authentication";
 import spraypaintMiddleware from "./middleware/spraypaint";
+import analyticsMiddleware from "./middleware/analytics";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
+
+import { analyticsRouter } from "../analytics-router";
 
 import User from "../models/user";
 import Room from "../models/room";
@@ -45,11 +48,12 @@ app.use(
 );
 app.use(
   graphqlClientMiddleware({
-    fetch: window.fetch,
+    fetch,
     route,
     cacheKey,
   })
 );
+app.use(analyticsMiddleware({ analyticsRouter, fetch }));
 app.use(reactActionViewMiddleware());
 app.use(controllerRouterMiddleware({ app, routes }));
 
