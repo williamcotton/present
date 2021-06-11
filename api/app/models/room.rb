@@ -53,19 +53,15 @@ class Room < ApplicationRecord
     token.to_jwt
   end
 
-  # const accessToken = new AccessToken(
-  #   twilioAccountSid,
-  #   twilioApiKeySid,
-  #   twilioApiKeySecret
-  # ); // TODO #18: remove and dependecy inject AccessToken and VideoGrant
-
-  # accessToken.identity = user.displayName;
-
-  # const grant = new VideoGrant();
-  # grant.room = serverRoomName({ serverName, name });
-  # accessToken.addGrant(grant);
-
-  # const jwt = accessToken.toJwt();
-
-  # return jwt;
+  def create_twilio_room
+    twilio_client.video.rooms.create(
+      status_callback: "http://present-dev.ngrok.io/server_status/#{team.name}/#{name}",
+      type: 'peer-to-peer',
+      unique_name: twilio_room_name
+    )
+  rescue Twilio::REST::RestError
+    # Twilio::REST::RestError ([HTTP 400] 53113 : Unable to create record
+    # Room exists
+    # https://www.twilio.com/docs/errors/53113
+  end
 end

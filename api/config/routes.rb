@@ -5,7 +5,6 @@ Rails.application.routes.draw do
     resources :users
     resources :room_connections
     mount VandalUi::Engine, at: '/vandal'
-    # your routes go here
   end
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  post '/team_status/:team_name/:room_name', to: 'team_status_webhook#create'
 end

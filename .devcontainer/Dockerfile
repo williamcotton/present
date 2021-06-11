@@ -59,6 +59,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
   xdg-utils \
   libxshmfence1
 
+# RUN wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+
 # [Optional] Uncomment this line to install additional gems.
 # RUN gem install <your-gem-names-here>
 

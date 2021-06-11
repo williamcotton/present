@@ -16,6 +16,7 @@ class RoomConnectionResource < ApplicationResource
   def save(model)
     team = Team.where(name: model.team_name).first
     room = team.rooms.where(name: model.room_name).first
+    room.create_twilio_room
     model.jwt = room.token(identity)
     model.twilio_room_name = room.twilio_room_name
     model.identity = identity
