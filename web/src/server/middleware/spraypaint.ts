@@ -1,6 +1,10 @@
 import type { Request, Response, NextFunction, Application } from "express";
 import origFetch from "isomorphic-fetch";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export default ({
   apiBaseUrl = "",
   app,

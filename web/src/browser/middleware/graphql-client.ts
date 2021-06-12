@@ -18,7 +18,7 @@ declare global {
     interface Request {
       q: <Type>(
         query: string,
-        variables: {},
+        variables?: {},
         options?: { cache?: boolean; abortController?: AbortController }
       ) => Promise<Type>;
       dataQuery: {
@@ -34,7 +34,7 @@ declare global {
 
 export default ({ fetch, route, cacheKey }: any) =>
   (req: Request, res: Response, next: NextFunction) => {
-    req.q = async (query, variables, options = {}) => {
+    req.q = async (query, variables = {}, options = {}) => {
       const cache = "cache" in options ? options.cache : true;
       const isMutation = /^mutation/.test(query);
       const key = cacheKey(query, variables);

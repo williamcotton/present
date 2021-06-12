@@ -1,12 +1,13 @@
 import { Model, Attr, BelongsTo } from "spraypaint";
 import ApplicationRecord from "./application-record";
 import Team from "./team";
+import type { Room as TwilioRoom } from "twilio-video";
 
-type Track = {
+export type Track = {
   enabled: boolean;
 };
 
-type Participant = {
+export type Participant = {
   identity: string;
   tracks: {
     audio: Track;
@@ -20,6 +21,9 @@ export default class Room extends ApplicationRecord {
 
   @Attr() name?: string;
   @Attr() participants?: Participant[];
+
+  isCurrent?: boolean;
+  twilioRoom?: TwilioRoom;
 
   @BelongsTo("teams") team?: Team;
 }

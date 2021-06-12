@@ -16,7 +16,7 @@ declare global {
     interface Request {
       q: <Type>(
         query: string,
-        variables: {},
+        variables?: {},
         options?: { cache?: boolean; abortController?: AbortController }
       ) => Promise<Type>;
       dataQuery: {
@@ -32,7 +32,7 @@ declare global {
 
 export default ({ schema, rootValue, cacheKey }: any) =>
   (req: Request, res: Response, next: NextFunction) => {
-    req.q = async (query, variables) => {
+    req.q = async (query, variables = {}) => {
       const isMutation = /^mutation/.test(query);
       const key = cacheKey(query, variables);
       const response = await graphql(schema, query, rootValue, req, variables);

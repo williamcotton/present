@@ -8,3 +8,9 @@ test:
 	cd api && rspec
 	kill -9 `cat api/tmp/pids/server.pid`
 	rm api/tmp/pids/server.pid
+
+ngrok:
+	ngrok http -subdomain=present-dev 3000
+
+dev:
+	cd web && yarn dev

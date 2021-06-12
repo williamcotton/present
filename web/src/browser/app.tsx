@@ -9,6 +9,7 @@ import graphqlClientMiddleware from "./middleware/graphql-client";
 import authenticationMiddleware from "./middleware/authentication";
 import spraypaintMiddleware from "./middleware/spraypaint";
 import analyticsMiddleware from "./middleware/analytics";
+import teamStreamMiddleware from "./middleware/team-stream";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
 
@@ -54,6 +55,7 @@ app.use(
   })
 );
 app.use(analyticsMiddleware({ analyticsRouter, fetch }));
+app.use(teamStreamMiddleware());
 app.use(reactActionViewMiddleware());
 app.use(controllerRouterMiddleware({ app, routes }));
 

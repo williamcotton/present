@@ -11,6 +11,7 @@ import graphqlClientMiddleware from "./middleware/graphql-client";
 import authenticationMiddleware from "./middleware/authentication";
 import analyticsMiddleware from "./middleware/analytics";
 import spraypaintMiddleware from "./middleware/spraypaint";
+import teamStreamMiddleware from "./middleware/team-stream";
 import reactActionViewMiddleware from "../middleware/react-action-view";
 import controllerRouterMiddleware from "../middleware/controller-router";
 import routes from "../routes";
@@ -63,6 +64,8 @@ app.use(reactRendererMiddleware({ appLayout }));
 app.use(route, graphqlHTTP({ schema, rootValue, graphiql }));
 app.use(graphqlClientMiddleware({ schema, rootValue, cacheKey }));
 app.use(analyticsMiddleware({ analyticsRouter, app }));
+app.use(teamStreamMiddleware());
 app.use(reactActionViewMiddleware());
 app.use(controllerRouterMiddleware({ app, routes }));
+
 export default app;

@@ -1,6 +1,6 @@
 class TeamStatusWebhookController < ApplicationController
   def create
-    puts message
+    ActionCable.server.broadcast("teams:#{team.name}", message)
   end
 
   def message
@@ -23,7 +23,7 @@ class TeamStatusWebhookController < ApplicationController
       roomName: room.name,
       roomSessionId: room_session_id
     }
-    body[:type] = track_type if track_type
+    body[:trackType] = track_type if track_type
     body
   end
 

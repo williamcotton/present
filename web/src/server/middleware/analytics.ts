@@ -1,4 +1,5 @@
 import format from "date-fns/format";
+import colors from "colors/safe";
 import type {
   Request,
   Response,
@@ -36,14 +37,24 @@ export default ({
       headers: { referer, "user-agent": userAgent },
     } = req;
     const { statusCode } = res;
+    const statusCodeString =
+      statusCode >= 500
+        ? colors.red(statusCode.toString())
+        : statusCode >= 300
+        ? colors.yellow(statusCode.toString())
+        : colors.green(statusCode.toString());
     const userJson = user ? JSON.stringify(user) : false;
     const bodyJson = body ? JSON.stringify(body) : false;
     const rawRequest = `${method.toUpperCase()} ${url} HTTP/${httpVersion}`;
     const timestamp = format(new Date(), "dd/MMM/yyyy:hh:mm:ss XXX");
     console.log(
-      `${ip} user-json ${userJson || "-"} [${timestamp}] "${rawRequest}" ${
-        statusCode || "-"
-      } - "${referer || "-"}" "${userAgent}" ${bodyJson || "-"}`
+      `${ip} user-json ${colors.yellow(
+        userJson || "-"
+      )} [${timestamp}] "${colors.blue(rawRequest)}" ${
+        statusCodeString || "-"
+      } - "${referer || "-"}" "${colors.gray(userAgent || "")}" ${colors.cyan(
+        bodyJson || "-"
+      )}`
     );
     // ip user-json displayName [timestamp] "rawRequest" statusCode byteSize "referer" "userAgent" bodyJson
   };
