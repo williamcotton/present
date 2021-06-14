@@ -21,8 +21,9 @@ declare global {
     interface Request {
       p: {
         [key: string]: {
-          create: () => string;
+          create: (opts: any) => string;
           destroy: ({ id }: { id: string | number }) => string;
+          show: (opts: any) => string;
         };
       };
       controller: {

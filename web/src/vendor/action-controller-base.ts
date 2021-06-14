@@ -161,7 +161,9 @@ export default class ActionControllerBase {
   router: Router;
   options?: ControllerRouteOptions;
   paths: ControllerPaths;
-  beforeFilter: any;
+  async beforeFilter(req: Request, res: Response, next: NextFunction) {
+    next();
+  }
 
   constructor(options?: ControllerRouteOptions) {
     this.router = routerFactory({ mergeParams: true });

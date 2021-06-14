@@ -83,24 +83,25 @@ export default () => {
     user: async (_: any, req: Request) => req.session?.user,
 
     localMedia: async (_: any, req: Request) => {
-      req.session = req.session || {};
-      if (typeof req.session.localMedia === "undefined") {
-        req.session.localMedia = {};
+      if (req.session) {
+        if (typeof req.session.localMedia === "undefined") {
+          req.session.localMedia = {};
+        }
+        if (typeof req.session.localMedia.headsDown === "undefined") {
+          req.session.localMedia.headsDown = false;
+        }
+        if (typeof req.session.localMedia.audio === "undefined") {
+          req.session.localMedia.audio = true;
+        }
+        if (typeof req.session.localMedia.video === "undefined") {
+          req.session.localMedia.video = true;
+        }
+        if (typeof req.session.localMedia.lastRoom === "undefined") {
+          // TODO: replace lastRoom on referer header with a lookup in server_transactions type:room-connection-access-granted
+          req.session.localMedia.lastRoom = "";
+        }
       }
-      if (typeof req.session.localMedia.headsDown === "undefined") {
-        req.session.localMedia.headsDown = false;
-      }
-      if (typeof req.session.localMedia.audio === "undefined") {
-        req.session.localMedia.audio = true;
-      }
-      if (typeof req.session.localMedia.video === "undefined") {
-        req.session.localMedia.video = true;
-      }
-      if (typeof req.session.localMedia.lastRoom === "undefined") {
-        // TODO: replace lastRoom on referer header with a lookup in server_transactions type:room-connection-access-granted
-        req.session.localMedia.lastRoom = "";
-        return req.session.localMedia;
-      }
+      return req.session?.localMedia;
     },
 
     updateLocalMedia: async (

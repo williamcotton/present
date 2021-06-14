@@ -26,9 +26,9 @@ export default function AppLayout({
 
   const consumerHost = "https://present-dev.ngrok.io/cable";
 
-  const team = currentTeam
+  const team = currentTeam?.name
     ? useTeamStream({
-        teamName: "wm-ads",
+        teamName: currentTeam.name,
         initialTeam: currentTeam,
         getTeamStream,
         user,

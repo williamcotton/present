@@ -7,7 +7,6 @@ export default class Team extends ApplicationRecord {
   static jsonapiType = "teams";
 
   @Attr() name?: string;
-  @Attr() participants?: Participant[];
 
   isCurrent?: boolean;
 
