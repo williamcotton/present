@@ -18,7 +18,11 @@ export default () => {
           {team.rooms?.map((room) => (
             <tr key={room.name}>
               <td>{room.name}</td>
-              <td>{room.participants?.length}</td>
+              <td>
+                {room.participants?.map((p) => (
+                  <div key={p.identity}>{JSON.stringify(p)}</div>
+                ))}
+              </td>
             </tr>
           ))}
         </tbody>

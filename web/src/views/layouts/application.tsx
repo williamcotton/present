@@ -36,6 +36,8 @@ export default function AppLayout({
       })
     : new Team();
 
+  console.log("team stream", team);
+
   return (
     <RequestContext.Provider value={req}>
       <TeamStreamContext.Provider value={team}>
@@ -47,7 +49,6 @@ export default function AppLayout({
             </Form>
           </div>
         )}
-
         <div>{content}</div>
       </TeamStreamContext.Provider>
     </RequestContext.Provider>

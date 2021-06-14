@@ -71,9 +71,7 @@ declare global {
 }
 
 function disconnectFromRoom() {
-  if (currentRoomSingleton?.twilioRoom?.disconnect) {
-    currentRoomSingleton?.twilioRoom.disconnect();
-  }
+  currentRoomSingleton?.twilioRoom?.disconnect();
   currentRoomSingleton = null;
 }
 

@@ -1,13 +1,12 @@
 class TeamStatusWebhookController < ApplicationController
   def create
-    ActionCable.server.broadcast("teams:#{team.name}", message)
+    ActionCable.server.broadcast("teams:#{team_name}", message)
   end
 
   def message
     type = params[:StatusCallbackEvent]
     {
-      room: room.attributes,
-      team: team.attributes,
+      roomName: room_name,
       user: user,
       type: type,
       body: body
@@ -20,7 +19,7 @@ class TeamStatusWebhookController < ApplicationController
     track_type = params[:TrackKind]
     body = {
       sequence: sequence,
-      roomName: room.name,
+      roomName: room_name,
       roomSessionId: room_session_id
     }
     body[:trackType] = track_type if track_type
@@ -36,11 +35,11 @@ class TeamStatusWebhookController < ApplicationController
     }
   end
 
-  def team
-    @team ||= Team.where(name: params[:team_name]).first
+  def room_name
+    params[:room_name]
   end
 
-  def room
-    @room ||= team.rooms.where(name: params[:room_name]).first
+  def team_name
+    params[:team_name]
   end
 end

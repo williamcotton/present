@@ -1,5 +1,3 @@
-/* eslint-disable no-nested-ternary, no-unused-expressions, no-param-reassign, no-unused-vars */
-// import { createConsumer } from "@rails/actioncable";
 import AbortController from "abort-controller";
 import { useEffect, useReducer } from "react";
 
@@ -31,7 +29,7 @@ type RoomEventOptions = {
 
 type EventType =
   | "server-refresh"
-  | "room-created" // TODO: implement!
+  | "room-created"
   | "participant-connected"
   | "participant-disconnected"
   | "track-added"
@@ -39,12 +37,12 @@ type EventType =
   | "track-enabled"
   | "track-disabled";
 
-type Action = {
+type TeamStreamAction = {
   type: EventType;
   body?: {
     trackType: TrackType;
   };
-  room?: Room;
+  roomName?: string;
   currentUser: {
     displayName: string;
   };
@@ -60,12 +58,7 @@ const roomCreated = ({
   currentUser,
   identity,
 }: RoomEventOptions) => {
-  const existingRoom = team.rooms?.find((r) => r.name === room.name);
-
-  if (!existingRoom) {
-    room = new Room(room);
-    team.rooms?.push(room);
-  }
+  // do something at some point?
 };
 
 const participantConnected = ({
@@ -110,11 +103,11 @@ const participantDisconnected = ({
       (p) => p.identity !== identity
     );
 
-  const existingServerParticipant = team.participants?.find(
+  const existingTeamParticipant = team.participants?.find(
     (p) => p.identity === identity
   );
 
-  if (!existingServerParticipant && existingParticipant)
+  if (!existingTeamParticipant && existingParticipant)
     team.participants?.push(existingParticipant);
 
   if (currentUser && currentUser.displayName === identity) {
@@ -135,45 +128,50 @@ const trackRemoved = ({
   // console.log('trackRemoved', room, identity, trackType);
 };
 
-const trackEnabled = ({ team, trackType, identity }: TrackEventOptions) => {
-  let participant = team.participants?.find((p) => p.identity === identity);
+const trackEnabled = ({ trackType, identity, room }: TrackEventOptions) => {
+  let participant = room.participants?.find((p) => p.identity === identity);
 
   if (!participant) {
     const tracks = defaultTracks;
     participant = { identity, tracks } as Participant;
-    team.participants?.push(participant);
+    room.participants?.push(participant);
   }
 
   participant.tracks[trackType].enabled = true;
 };
 
-const trackDisabled = ({ team, trackType, identity }: TrackEventOptions) => {
-  let participant = team.participants?.find((p) => p.identity === identity);
+const trackDisabled = ({ trackType, identity, room }: TrackEventOptions) => {
+  let participant = room.participants?.find((p) => p.identity === identity);
 
   if (!participant) {
     const tracks = defaultTracks;
     participant = { identity, tracks } as Participant;
-    team.participants?.push(participant);
+    room.participants?.push(participant);
   }
 
   participant.tracks[trackType].enabled = false;
 };
 
-const teamStreamEventReducer = (team: Team, action: Action): Team => {
+const teamStreamEventReducer = (team: Team, action: TeamStreamAction): Team => {
   if (action.type === "server-refresh" && action.team) {
     return action.team;
   }
 
-  const { type, body, currentUser, user } = action;
-  let { room } = action;
+  const { type, body, currentUser, user, roomName } = action;
   const trackType = body?.trackType;
 
   const identity = user?.displayName || "";
 
+  let room = team.rooms?.find((r) => r.name === roomName);
+
   if (!room) {
-    room = new Room(room);
+    room = new Room({
+      name: roomName,
+      participants: [],
+    });
     team.rooms?.push(room);
   }
+
   type === "room-created"
     ? roomCreated({ team, room, currentUser, identity })
     : type === "participant-connected"
@@ -245,8 +243,7 @@ export default function useTeamStream({
         team_name: teamName,
       },
       {
-        received(data: Action) {
-          console.log(data);
+        received(data: TeamStreamAction) {
           teamStreamEventDispatch({ ...data, currentUser });
         },
         disconnected() {
