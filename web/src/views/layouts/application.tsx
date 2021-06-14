@@ -36,8 +36,6 @@ export default function AppLayout({
       })
     : new Team();
 
-  console.log("team stream", { team });
-
   return (
     <RequestContext.Provider value={req}>
       <TeamStreamContext.Provider value={team}>

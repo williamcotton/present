@@ -1,5 +1,5 @@
 import router from "router";
-import type { Request, Response, NextFunction, Application } from "express";
+import type { Request, Response } from "express";
 
 export const analyticsRouter = router();
 

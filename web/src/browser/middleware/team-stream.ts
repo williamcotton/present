@@ -186,7 +186,9 @@ export default () => {
     };
 
     req.getTeamStream = async ({ teamName, abortController, cache = true }) => {
-      const { data: team } = await Team.where({ name: teamName }).first();
+      const { data: team } = await Team.where({ name: teamName })
+        .includes("rooms")
+        .first();
       team?.rooms?.forEach((room) => {
         if (room.name === currentRoomSingleton?.name) {
           room.isCurrent = true;

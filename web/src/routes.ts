@@ -5,6 +5,7 @@ export default drawRoutes(({ root, resources, error }) => {
 
   resources("signup", { only: ["index", "create"] });
   resources("login", { only: ["index", "create", "destroy"] });
+  resources("team", { only: ["show"] });
 
   error(404, { controller: "errors", action: "notFound" });
   error(500, { controller: "errors", action: "serverError" });
