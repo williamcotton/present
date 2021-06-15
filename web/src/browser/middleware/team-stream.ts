@@ -193,7 +193,6 @@ export default () => {
     };
 
     req.getLocalMedia = async () => {
-      // TODO #27: Support multiple tracks per type... sharing 2-3 screens at a time, sharing 2 audio tracks, etc
       if (!localMediaSingleton) {
         const videoTrack = await createLocalVideoTrack({
           width: 150,
