@@ -7,3 +7,4 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 User.create(name: 'Willie', email: 'williamcotton@gmail.com')
+Room.create(name: 'kitchen', team: Team.create(name: 'dev'))

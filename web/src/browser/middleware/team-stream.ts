@@ -15,6 +15,8 @@ import Team from "../../models/team";
 import Room from "../../models/room";
 import RoomConnection from "../../models/room-connection";
 
+import type { Request, Response, NextFunction } from "express";
+
 export type LocalMedia = {
   audio: { track: LocalAudioTrack | boolean; enabled: boolean };
   video: { track: LocalVideoTrack | boolean; enabled: boolean };
@@ -26,35 +28,24 @@ export type LocalMedia = {
   };
 };
 
-let currentRoomSingleton: Room | null;
-let currentTeamStreamSingleton: Team | null;
-let localMediaSingleton: LocalMedia | null;
-
-import type { Request, Response, NextFunction } from "express";
+export type getTeamStream = ({
+  teamName,
+  abortController,
+  cache,
+}: {
+  teamName: string;
+  abortController?: AbortController;
+  cache?: boolean;
+}) => Promise<Team | null>;
 
 declare global {
   namespace Express {
     interface Request {
-      getTeamStream: ({
-        teamName,
-        abortController,
-        cache,
-      }: {
-        teamName: string;
-        abortController?: AbortController;
-        cache?: boolean;
-      }) => Promise<Team | null>;
-      getCachedTeamStream: ({
-        teamName,
-        abortController,
-        cache,
-      }: {
-        teamName: string;
-        abortController?: AbortController;
-        cache?: boolean;
-      }) => Promise<Team | null>;
+      getTeamStream: getTeamStream;
+      getCachedTeamStream: getTeamStream;
       currentRoom?: Room | null;
       currentTeam?: Team | null;
+      localMedia?: LocalMedia | null;
       getLocalMedia: () => Promise<LocalMedia | null>;
       disableMedia: ({
         type,
@@ -69,6 +60,10 @@ declare global {
     getDisplayMedia(constraints?: MediaStreamConstraints): Promise<MediaStream>;
   }
 }
+
+let currentRoomSingleton: Room | null;
+let currentTeamStreamSingleton: Team | null;
+let localMediaSingleton: LocalMedia | null;
 
 function disconnectFromRoom() {
   currentRoomSingleton?.twilioRoom?.disconnect();
@@ -109,8 +104,6 @@ async function getScreenShareTrack() {
   return track;
 }
 
-let onlyFirst = true;
-
 export default () => {
   document.addEventListener("beforeunload", disconnectFromRoom);
 
@@ -123,10 +116,9 @@ export default () => {
         roomName: name,
         teamName,
       });
+      await roomConnection.save();
       const { jwt, twilioRoomName } = roomConnection;
-      if (onlyFirst) {
-        onlyFirst = false;
-      }
+      console.log({ jwt, twilioRoomName });
       const tracks = localMediaSingleton
         ? ([
             localMediaSingleton.audio.track,
@@ -151,7 +143,10 @@ export default () => {
         publications: localParticipant.videoTracks,
         disabled: !localMediaSingleton?.video.enabled,
       });
-      const room = new Room({ name, twilioRoom });
+      const room =
+        (await Room.where({ name }).first()).data || new Room({ name });
+      room.twilioRoom = twilioRoom;
+      console.log(room.participants);
       return room;
     }
 
@@ -192,15 +187,12 @@ export default () => {
           room.isCurrent = true;
         }
       });
-
       currentTeamStreamSingleton = team;
-
       req.currentTeam = team;
       return team;
     };
 
     req.getLocalMedia = async () => {
-      // TODO #27: Support multiple tracks per type... sharing 2-3 screens at a time, sharing 2 audio tracks, etc
       if (!localMediaSingleton) {
         const videoTrack = await createLocalVideoTrack({
           width: 150,

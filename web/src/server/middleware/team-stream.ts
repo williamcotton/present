@@ -73,7 +73,6 @@ export default () => (req: Request, res: Response, next: NextFunction) => {
     const { teamName } = req;
     const { data: room } = await Room.where({
       name,
-      teamName,
     }).first();
     req.currentRoom = room as Room;
     return room as Room;
