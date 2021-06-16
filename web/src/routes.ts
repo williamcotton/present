@@ -6,6 +6,7 @@ export default drawRoutes(({ root, resources, error }) => {
   resources("signup", { only: ["index", "create"] });
   resources("login", { only: ["index", "create", "destroy"] });
   resources("team", { only: ["show"] });
+  resources("posts", { only: ["index"] });
 
   resources(
     "team",
